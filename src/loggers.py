@@ -2,6 +2,8 @@ from datetime import datetime as dt
 import logging as log
 import os
 
+this_path = os.path.abspath(os.path.dirname(__file__))
+PATH = os.path.join(this_path, "../logs")
 
 def get_datestamp():
     now = dt.now()
@@ -29,7 +31,7 @@ def get_formatted_s_handler():
 
 def get_logger_fname(filename):
     dt_string = get_datestamp()
-    path = os.path.join('/','var','log')
+    path = path = PATH
     full_filename = '{}/{}'.format(path,'{}_{}.log'.format(filename,dt_string))
     return full_filename
 

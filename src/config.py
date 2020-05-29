@@ -1,11 +1,13 @@
 import json
-# from helpers import setup_logger
+import os
 
-WATCHED_FILES = ['config.json']
+
+config_file = "config.json"
+
+WATCHED_FILES = [config_file]
 LAST_EXIT_FILE = 'last_exit.pkl'
 STATE_FILE = 'gpi_pair_state.pkl'
 
-config_file = 'config.json'
 
 # das_logger = setup_logger()
 try:
