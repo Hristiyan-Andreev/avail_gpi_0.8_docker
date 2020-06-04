@@ -37,7 +37,7 @@ def check_elemental_connection():
 gpi_event_dict = {}
 if stater.is_last_exit_from_reload() is True:
     gpi_cue_state = stater.load_gpi_state()
-    main_log.info('Last exit: Reload')
+    main_log.info('Last exit: Reloade')
     
     for gpi, id in cf.gpi2stream.items():
         gpi_event_dict[gpi] = StreamAvailCtrl(gpi, id, cf.elemental_ip,\
@@ -62,14 +62,15 @@ main_log.info('Reloading enabled')
 GPIO.setmode(GPIO.BCM)
 #Setup GPIOs as inputs with PULL-UP
 for gpi,id in cf.gpi2stream.items():
-    print(gpi)
     GPIO.setup( int(gpi), GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
+    main_log.info('GPIO pin {} for ID {} set as input.'.format(gpi,id))
+main_log.info('GPIO pins inputs set.')
 # Tie callbacks to events
 
 for gpi,id in cf.gpi2stream.items():
     GPIO.add_event_detect( int(gpi), GPIO.BOTH, callback = gpi_event_dict[gpi].\
         start_stop_avail , bouncetime = 20)
+main_log.info('GPIO pins event detection added.')
 
 # check_elemental_connection()
 
@@ -81,8 +82,7 @@ if __name__ == '__main__':
             gpi_event_dict['21'].in_cue = True
             main_log.info("Running")
             time.sleep(10)
-            pass
+            
     except KeyboardInterrupt:
-        main_log.info('Exiting on keyboard interrupt\n')
         stater.save_last_exit(last_exit_state='Exit')
-        pass
+        main_log.info('Exiting on keyboard interrupt\n')

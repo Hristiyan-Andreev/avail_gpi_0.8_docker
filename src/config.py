@@ -15,7 +15,7 @@ try:
 		config_dict = json.load(cf_file)
 except FileExistsError or FileNotFoundError:
 	# das_logger.error('Nema config.json file, losho.')
-	print('Nema config deistvaite!')
+	print('Nemam config deistvaite!')
 
 elemental_ip = config_dict['elemental_ip']
 gpi2stream = config_dict['gpi_to_event']
