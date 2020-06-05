@@ -16,7 +16,7 @@ import config as cf
 
 # main_log = lg.setup_logger('main_logger','main')
 main_log = lg.get_main_logger()
-main_log.info('Starting Ad Avail Controller ver. 0.7')
+main_log.info('Starting Ad Avail Controller ver. 0.8')
 stater = StateManager(cf.LAST_EXIT_FILE, cf.STATE_FILE)
 
 def check_elemental_connection():

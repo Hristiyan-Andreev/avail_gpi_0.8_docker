@@ -1,16 +1,15 @@
 # Python Base Image from https://hub.docker.com/r/arm32v7/python/
 FROM arm32v7/python:3
 
-# Copy the Python Script to blink LED
-COPY ./src ./
-COPY ./logs ./
-COPY ./cfg ./
-
-# Intall the rpi.gpio python module
-# RUN pip install --no-cache-dir rpi.gpio
-COPY requirements.txt ./
-# RUN apt-get install build-essential
+COPY requirements.txt /
 RUN pip install -r requirements.txt
 
+# Copy the Python Script to blink LED
+COPY . /app
+WORKDIR /app/src
+# RUN pip install --no-cache-dir rpi.gpio
+# RUN apt-get install build-essential
+# ENTRYPOINT [ "python3" ]
 # Trigger Python script
-CMD ["python", "./main.py"]
+# CMD ["ls"]
+CMD ["python", "main.py"]
