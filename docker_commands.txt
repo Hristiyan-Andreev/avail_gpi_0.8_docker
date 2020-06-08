@@ -7,6 +7,7 @@ docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app avail_
 # Working with reload and log files:
 docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1
 
-# Remove dangling images
+# Remove dangling images:
+docker system prune
 docker rmi -f $(docker images -f "dangling=true" -q)
 
