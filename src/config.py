@@ -1,8 +1,17 @@
 import json
 import os
+import sys
+import inspect
 
-
-config_file = "config.json"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# print(current_dir)
+parent_dir = os.path.dirname(current_dir)
+cfg_dir = os.path.join(parent_dir, 'cfg')
+# print(cfg_dir)
+# sys.path.append(cfg_dir)
+config_file = os.path.join(cfg_dir, 'config.json')
+print(config_file)
+# config_file = "config.json"
 
 WATCHED_FILES = [config_file]
 LAST_EXIT_FILE = 'last_exit.pkl'

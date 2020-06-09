@@ -7,9 +7,6 @@ RUN pip install -r requirements.txt
 # Copy the Python Script to blink LED
 COPY . /app
 WORKDIR /app/src
-# RUN pip install --no-cache-dir rpi.gpio
-# RUN apt-get install build-essential
-# ENTRYPOINT [ "python3" ]
-# Trigger Python script
 # CMD ["ls"]
+# Trigger Python script
 CMD ["python", "main.py"]
