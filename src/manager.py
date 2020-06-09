@@ -2,8 +2,9 @@ import os
 import sys
 import subprocess as subp
 import loggers as lg
+import glob as gb
+import re
 import time
-import click as cl
 from os.path import getmtime
 import PyInquirer as pyq
 
@@ -120,8 +121,17 @@ def restart_avail_script():
 
     return 0
 
+def find_latest_log():
+    all_log_files = []
+    for log_file in gb.glob("/app/logs/*.log"):
+        all_log_files.append(log_file)
+
+    logs_saved_times = [(f, getmtime(f)) for f in all_log_files]
+    print(logs_saved_times)
+
 
 def read_main_log():
+    find_latest_log()
     main_log_file = lg.get_logger_fname('main')
     last_save_time = getmtime(main_log_file)
     print('\nPress CTRL+C to Exit')
