@@ -1,0 +1,10 @@
+docker build -t "av_controller:v1.1" .
+
+
+# Working interactive and refreshing
+docker container run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /Projects/avail_gpi_0.8_docker/controller:/app av_controller:v1.1
+
+# Remove dangling images:
+docker system prune
+docker rmi -f $(docker images -f "dangling=true" -q)
+
