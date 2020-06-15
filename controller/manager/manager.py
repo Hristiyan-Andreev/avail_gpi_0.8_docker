@@ -6,11 +6,13 @@ import re
 import time
 from os.path import getmtime
 import PyInquirer as pyq
+import docker as dock
 
 import loggers as lg
 
 
-AVAIL_MAIN_FILE = 'main.py'
+# AVAIL_MAIN_FILE = 'main.py'
+AVAIL_CONTAINER_NAME = "avail_gpi"
 # import PyInquirer as pyq
 
 # TODO: Master script to
@@ -20,6 +22,7 @@ AVAIL_MAIN_FILE = 'main.py'
 # Used universally through the program as "back one step" flag
 EXIT_FLAG = 123
 
+dock_client = dock.from_env()
 # Dicts of menu options - to avoid using strings in the whole program
 mm_choices = {
     'ss_script': 'Start/Stop/Restart main avail script',
@@ -43,48 +46,56 @@ autostart_options = {
 
 control_log = lg.setup_logger('control_log', 'controller')
 
-def get_proc_pid(name):
-    return list(map(int,subp.check_output(["pidof", "-c", name]).split()))
+# def get_proc_pid(name):
+#     return list(map(int,subp.check_output(["pidof", "-c", name]).split()))
 
-def get_arg_pid(argument):
-   return list(map(int,subp.check_output(["pgrep", "-f", argument]).split()))
+# def get_arg_pid(argument):
+#    return list(map(int,subp.check_output(["pgrep", "-f", argument]).split()))
 
-def get_main_proc_pid():
-    python_pids = get_proc_pid('python3')
+# def get_main_proc_pid():
+#     python_pids = get_proc_pid('python3')
 
-    try:
-        main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
-    except subp.CalledProcessError as no_main_error:
-        control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
-        return 1
-    else:
-        python_main_py_pid = set(python_pids).intersection(main_py_pids)
-        return python_main_py_pid.pop()
+#     try:
+#         main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
+#     except subp.CalledProcessError as no_main_error:
+#         control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
+#         return 1
+#     else:
+#         python_main_py_pid = set(python_pids).intersection(main_py_pids)
+#         return python_main_py_pid.pop()
     
 
 def is_avail_main_running():
     #Check if main program is running
     
-    python_pids = get_proc_pid('python3')
-    try:
-        main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
-    except subp.CalledProcessError as no_main_error:
-        control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
-        main_file_found = False
-        return False
-    else:
-        main_file_found = True
+    # python_pids = get_proc_pid('python3')
+    # try:
+    #     main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
+    # except subp.CalledProcessError as no_main_error:
+    #     control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
+    #     main_file_found = False
+    #     return False
+    # else:
+    #     main_file_found = True
     
-    if main_file_found is True:
-        python_main_py_pid = set(python_pids).intersection(main_py_pids)
+    # if main_file_found is True:
+    #     python_main_py_pid = set(python_pids).intersection(main_py_pids)
 
-        if python_main_py_pid:
-            python_main_py_pid = python_main_py_pid.pop()
-            control_log.info("{} pid is {}".format(AVAIL_MAIN_FILE, python_main_py_pid))
-            return True
-        else:
-            control_log.info('{} python process is not running'.format(AVAIL_MAIN_FILE))
-            return False
+    #     if python_main_py_pid:
+    #         python_main_py_pid = python_main_py_pid.pop()
+    #         control_log.info("{} pid is {}".format(AVAIL_MAIN_FILE, python_main_py_pid))
+    #         return True
+    #     else:
+    #         control_log.info('{} python process is not running'.format(AVAIL_MAIN_FILE))
+    #         return False
+    try:
+        dock_client.containers.get(AVAIL_CONTAINER_NAME)
+    except dock.errors.NotFound:
+        return False
+    except dock.errors.APIError:
+        control_log.exception('Docker client-socket connection not working')
+    
+    return True
 
 
 def start_avail_script():
@@ -94,25 +105,29 @@ def start_avail_script():
     # # if is_running is True:
     #     control_log.info('Ad avail script {} is already running'.format(AVAIL_MAIN_FILE))
     #     return 1
-    
-    os.system('docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
+    if is_avail_main_running() is False:
+        os.system('docker container run --rm --privileged --name "{}" -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &'.format(AVAIL_CONTAINER_NAME))
+    else:
+        control_log.info('Main container is already running')
 
-    return
+    return 0
     
 
 def stop_avail_script():
     is_running = is_avail_main_running()
 
     if is_running is False:
-        control_log.info('Ad avail script {} is not running'.format(AVAIL_MAIN_FILE))
+        control_log.info('Ad avail script {} is not running'.format(AVAIL_CONTAINER_NAME))
         return 1
 
-    main_proc_pid = get_main_proc_pid()
-    subp.check_output(["kill", str(main_proc_pid)])
+    avail_container = dock_client.containers.get(AVAIL_CONTAINER_NAME)
+    avail_cntr_id = avail_container.id
+    try:
+        avail_container.kill()
+    except dock.errors.APIError:
+        control_log.exception('Docker client-socket connection not working')
     
-
-    control_log.info('Ad avail script {} with PID: {} was terminated'.format(AVAIL_MAIN_FILE, main_proc_pid))
-
+    control_log.info('Avail container with ID:{} was terminated and deleted'.format(avail_cntr_id))
     return 0
 
 
