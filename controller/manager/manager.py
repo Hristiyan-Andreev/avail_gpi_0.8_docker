@@ -9,6 +9,7 @@ import PyInquirer as pyq
 import docker as dock
 
 import loggers as lg
+import cli
 
 
 # AVAIL_MAIN_FILE = 'main.py'
@@ -19,15 +20,16 @@ AVAIL_CONTAINER_NAME = "avail_gpi"
 # 4) monitor (health check) the main script
 # 5) Menu
 
-# Used universally through the program as "back one step" flag
-EXIT_FLAG = 123
-
+# Create a docker client, connected to the docker socket (server)
+# Used for finding and stopping containers
 dock_client = dock.from_env()
+
 # Dicts of menu options - to avoid using strings in the whole program
 mm_choices = {
     'ss_script': 'Start/Stop/Restart main avail script',
     'en_dis_auto': 'Enable/Disable autostart',
     'show_log': 'Show current log',
+    'config': 'Configure paramaters',
     'back': 'Exit the program'
 }
 
@@ -46,24 +48,6 @@ autostart_options = {
 
 control_log = lg.setup_logger('control_log', 'controller')
 
-# def get_proc_pid(name):
-#     return list(map(int,subp.check_output(["pidof", "-c", name]).split()))
-
-# def get_arg_pid(argument):
-#    return list(map(int,subp.check_output(["pgrep", "-f", argument]).split()))
-
-# def get_main_proc_pid():
-#     python_pids = get_proc_pid('python3')
-
-#     try:
-#         main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
-#     except subp.CalledProcessError as no_main_error:
-#         control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
-#         return 1
-#     else:
-#         python_main_py_pid = set(python_pids).intersection(main_py_pids)
-#         return python_main_py_pid.pop()
-    
 
 def is_container_running(name):
 
@@ -206,6 +190,9 @@ def main_menu():
 
         elif mm_answers['main_choice'] is mm_choices['show_log']:
             read_main_log()
+
+        elif mm_answers['main_choice'] is mm_choices['config']:
+            cli.config_menu()
 
 
 def ss_menu():
