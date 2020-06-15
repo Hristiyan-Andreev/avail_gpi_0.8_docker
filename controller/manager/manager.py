@@ -65,31 +65,10 @@ control_log = lg.setup_logger('control_log', 'controller')
 #         return python_main_py_pid.pop()
     
 
-def is_avail_main_running():
-    #Check if main program is running
-    
-    # python_pids = get_proc_pid('python3')
-    # try:
-    #     main_py_pids = get_arg_pid(AVAIL_MAIN_FILE)
-    # except subp.CalledProcessError as no_main_error:
-    #     control_log.info('{} is not running'.format(AVAIL_MAIN_FILE))
-    #     main_file_found = False
-    #     return False
-    # else:
-    #     main_file_found = True
-    
-    # if main_file_found is True:
-    #     python_main_py_pid = set(python_pids).intersection(main_py_pids)
+def is_container_running(name):
 
-    #     if python_main_py_pid:
-    #         python_main_py_pid = python_main_py_pid.pop()
-    #         control_log.info("{} pid is {}".format(AVAIL_MAIN_FILE, python_main_py_pid))
-    #         return True
-    #     else:
-    #         control_log.info('{} python process is not running'.format(AVAIL_MAIN_FILE))
-    #         return False
     try:
-        dock_client.containers.get(AVAIL_CONTAINER_NAME)
+        dock_client.containers.get(name)
     except dock.errors.NotFound:
         return False
     except dock.errors.APIError:
@@ -105,8 +84,9 @@ def start_avail_script():
     # # if is_running is True:
     #     control_log.info('Ad avail script {} is already running'.format(AVAIL_MAIN_FILE))
     #     return 1
-    if is_avail_main_running() is False:
+    if is_container_running(AVAIL_CONTAINER_NAME) is False:
         os.system('docker container run --rm --privileged --name "{}" -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &'.format(AVAIL_CONTAINER_NAME))
+        control_log.info('Avail container started')
     else:
         control_log.info('Main container is already running')
 
@@ -114,7 +94,7 @@ def start_avail_script():
     
 
 def stop_avail_script():
-    is_running = is_avail_main_running()
+    is_running = is_container_running(AVAIL_CONTAINER_NAME)
 
     if is_running is False:
         control_log.info('Ad avail script {} is not running'.format(AVAIL_CONTAINER_NAME))
@@ -126,6 +106,7 @@ def stop_avail_script():
         avail_container.kill()
     except dock.errors.APIError:
         control_log.exception('Docker client-socket connection not working')
+        return 1
     
     control_log.info('Avail container with ID:{} was terminated and deleted'.format(avail_cntr_id))
     return 0
