@@ -95,7 +95,6 @@ def start_avail_script():
     #     control_log.info('Ad avail script {} is already running'.format(AVAIL_MAIN_FILE))
     #     return 1
     
-    # os.system('sh run.sh')
     os.system('docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
 
     return
