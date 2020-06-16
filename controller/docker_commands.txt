@@ -7,6 +7,15 @@ docker container run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /P
 # With name
 docker container run --name "av_manager" -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /Projects/avail_gpi_0.8_docker/controller:/app av_controller:v1.1
 
+# Interactive, refreshing, with name and logs
+docker container run --name "av_manager" -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /Projects/avail_gpi_0.8_docker/controller:/app -v /var/log:/app/logs av_controller:v1.1
+
+# Working interactive, name, logs + config reloading
+docker container run --name "av_manager" -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /Projects/avail_gpi_0.8_docker/controller:/app -v /Projects/avail_gpi_0.8_docker/avail_gpi/cfg/:/app/cfg -v /var/log:/app/logs av_controller:v1.1
+
+
+
+
 # Remove dangling images:
 docker system prune
 docker rmi -f $(docker images -f "dangling=true" -q)

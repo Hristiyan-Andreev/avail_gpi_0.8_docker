@@ -12,7 +12,6 @@ class StateManager():
                 last_exit = pk.load(exit_file)
                 # print(last_exit)
         except FileNotFoundError or FileExistsError as e:
-            print(e)
             self.save_last_exit(last_exit_state='Exit')
             last_exit = 'Exit'
             pass
@@ -29,6 +28,7 @@ class StateManager():
         for gpi, obj in gpi_stream_dict.items():
             state_dict[gpi] = obj.in_cue
 
+        print("Dict to save:{}".format(state_dict))
         with open(self.state_file, 'wb') as self.state_file:
                 pk.dump(state_dict, self.state_file, protocol=pk.\
                     HIGHEST_PROTOCOL)
@@ -38,6 +38,7 @@ class StateManager():
     def load_gpi_state(self):
         with open(self.state_file,'rb') as state_file:
             loaded_dict = pk.load(state_file)
+            print("Loaded dict:{}".format(loaded_dict))
             return loaded_dict
 
 

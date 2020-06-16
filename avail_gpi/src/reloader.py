@@ -5,6 +5,8 @@ import threading as th
 import time
 import loggers as lg
 
+import RPi.GPIO as GPIO
+
 class Reloader(th.Thread):
     def __init__(self, files_to_watch, gpi_event_dict = None, check_interval = 2, linux = True,\
                 before_reload = None):
@@ -35,15 +37,16 @@ class Reloader(th.Thread):
                 if getmtime(f) != mtime:
                     # One of the files has changed, so restart the script.
                     self.logger.info('Change detected in {} --> Restarting'.format(f))
+                    GPIO.cleanup()
+                    self.logger.info("GPIO cleaned up\n")
                     if self.linux is True:
                     # When running the script via `./daemon.py` (e.g. Linux/Mac OS), use
                         try:
                             if self.before_reload_func:
                                 self.before_reload_func(self.before_reload_dict)
                         except AttributeError:
-                            print('No pre reload command given')
+                            self.logger.info('No pre reload command given')
 
-                        # print(sys.executable, sys.argv)
                         os.execl(sys.executable, sys.executable, *sys.argv)
                         pass
 

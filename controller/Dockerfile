@@ -15,3 +15,4 @@ WORKDIR /app/manager
 # CMD ["ls"]
 # Trigger Python script
 CMD ["python", "manager.py"]
+# CMD ["sh"]

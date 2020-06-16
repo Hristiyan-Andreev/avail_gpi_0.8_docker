@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+    avail_gpi:
+        build: ./avail_gpi
+        volumes:
+            - ./avail_gpi/src
