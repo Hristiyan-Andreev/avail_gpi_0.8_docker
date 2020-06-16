@@ -12,10 +12,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 cfg_dir = os.path.join(parent_dir, 'cfg')
 config_file = os.path.join(cfg_dir, 'config.json')
+dft_cfg_file = os.path.join(cfg_dir, 'default_config.json')
 
 
 # Used to manage configuration files - read, write and changes
-cfg = ConfigManager(config_file, 'default_config.json')
+cfg = ConfigManager(config_file, dft_cfg_file)
 
 # Dicts of menu options - to avoid using strings in the whole program
 mm_choices = {
