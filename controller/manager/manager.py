@@ -69,7 +69,7 @@ def start_avail_script():
     #     control_log.info('Ad avail script {} is already running'.format(AVAIL_MAIN_FILE))
     #     return 1
     if is_container_running(AVAIL_CONTAINER_NAME) is False:
-        os.system('docker container run --rm --privileged --name "{}" -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &'.format(AVAIL_CONTAINER_NAME))
+        os.system('docker container run --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
         control_log.info('Avail container started')
     else:
         control_log.info('Main container is already running')
