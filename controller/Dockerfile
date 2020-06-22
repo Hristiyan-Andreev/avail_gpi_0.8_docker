@@ -7,7 +7,7 @@ RUN pip install -r requirements.txt
 # RUN apt-get update && apt-get upgrade
 RUN apt-get install -y curl
 RUN curl -sSL https://get.docker.com/ | sh
-# Copy the Python Script to blink LED
+ENV TZ="Europe/Sofia"
 COPY . /app
 # COPY ./../Projects/avail_gpi_0.8_docker/cfg/ /app/cfg
 # COPY ./../cfg/ /app/cfg
