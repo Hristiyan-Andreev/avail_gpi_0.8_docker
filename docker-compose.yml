@@ -2,17 +2,22 @@ version: '3'
 
 services:
     avail_gpi:
-        name: avail_gpi
+        container_name: avail_gpi
         build: ./avail_gpi
         volumes:
             - ./avail_gpi/:/app
             - /var/log/:/app/logs
+        tty: false
+        stdin_open: false
+        privileged: true
 
     controller:
-        name: av_manager
+        container_name: av_manager
         build: ./controller
         volumes:
             - ./controller/:/app
             - /Projects/avail_gpi_0.8_docker/avail_gpi/cfg/:/app/cfg
             - /var/run/docker.sock:/var/run/docker.sock
             - /var/log:/app/logs
+        tty: true
+        stdin_open: true
