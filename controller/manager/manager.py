@@ -69,9 +69,9 @@ def start_avail_script():
     
     if is_container_running(AVAIL_CONTAINER_NAME) is False:
         # os.system('docker container run -d --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
-        dock_client.containers.run('avail_gpi_0.8:v1.1', detach=True, privileged=True,\
+        avail_container = dock_client.containers.run('avail_gpi_0.8:v1.1', detach=True, privileged=True,\
             remove=True, name='avail_gpi', volumes=volumes)
-        control_log.info('Avail container started')
+        control_log.info('Avail container started with id:{}'.format(avail_container.id))
     else:
         control_log.info('Main container is already running')
 
@@ -99,7 +99,10 @@ def stop_avail_script():
 
 def restart_avail_script():
     stop_avail_script()
-    time.sleep(5)
+    time.sleep(2)
+    deleted = dock_client.containers.prune()
+    control_log.info('Deleted containers: {}'.format(deleted))
+    time.sleep(2)
     start_avail_script()
 
     return 0
