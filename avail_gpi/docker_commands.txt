@@ -1,17 +1,11 @@
 docker build -t "avail_gpi_0.8:v1.1" .
 
 
-# Working with reload, but no log files:
-docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app avail_gpi_0.8:v1.1
-
-# Working with reload and log files:
-docker container run --privileged -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1
-
-# Working with reload, logging and name
-docker container run --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1
-
 # Working with reload, logging, name and container removal
 docker container run --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1
+
+# Working with reload, logging, name, container removal and auto restart unless stopped
+docker container run --rm --privileged --restart  unless-stopped --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1
 
 # Remove dangling images:
 docker system prune
