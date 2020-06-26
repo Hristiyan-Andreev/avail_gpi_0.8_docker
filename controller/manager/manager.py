@@ -150,12 +150,12 @@ def read_main_log():
 
 
 def enable_avaiL_startup():
-    with open('autostart.sh', 'w') as bash_file:
+    with open('autostart_avail.sh', 'w') as bash_file:
         bash_file.seek(0)
         bash_file.truncate()
         bash_file.write('#!/bin/sh\n')
-        bash_file.write('cd /Projects/gpi_0.7_hw_reworked/\n')
-        bash_file.write('python3 {} &'.format(AVAIL_MAIN_FILE))
+        bash_file.write(
+            'docker container run --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1\n')
 
     control_log.info('Main avail script autostart enabled')
 
@@ -163,7 +163,7 @@ def enable_avaiL_startup():
 
 
 def disable_avail_startup():
-    with open('autostart.sh', 'w') as bash_file:
+    with open('autostart_avail.sh', 'w') as bash_file:
         bash_file.seek(0)
         bash_file.truncate()
 
