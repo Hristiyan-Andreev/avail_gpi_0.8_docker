@@ -14,11 +14,15 @@ import cli
 
 # AVAIL_MAIN_FILE = 'main.py'
 AVAIL_CONTAINER_NAME = "avail_gpi"
-# import PyInquirer as pyq
 
-# TODO: Master script to
-# 4) monitor (health check) the main script
-# 5) Menu
+# Set to true if Deploymend mode is needed
+DEPLOYMENT = False
+
+if DEPLOYMENT is True:
+    avail_image = "handreev/avail_gpi_0.8:ver06_2020"
+else:
+    avail_image = "avail_gpi_0.8:v1.1"
+
 
 # Create a docker client, connected to the docker socket (server)
 # Used for finding and stopping containers
@@ -68,9 +72,10 @@ def start_avail_script():
     }
     
     if is_container_running(AVAIL_CONTAINER_NAME) is False:
+        control_log.info("{} not running - starting in Deployment mode: {}".format(avail_image, DEPLOYMENT))
         # os.system('docker container run -d --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
-        avail_container = dock_client.containers.run('avail_gpi_0.8:v1.1', detach=True, privileged=True,\
-            remove=True, name='avail_gpi', volumes=volumes)
+        avail_container = dock_client.containers.run(avail_image, detach=True, privileged=True,\
+            remove=True, name=AVAIL_CONTAINER_NAME, volumes=volumes)
         control_log.info('Avail container started with id:{}'.format(avail_container.id))
     else:
         control_log.info('Main container is already running')
