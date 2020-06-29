@@ -155,7 +155,7 @@ def read_main_log():
 
 
 def enable_avaiL_startup():
-    with open('autostart_avail.sh', 'w') as bash_file:
+    with open('autostart/autostart_avail.sh', 'w') as bash_file:
         bash_file.seek(0)
         bash_file.truncate()
         bash_file.write('#!/bin/sh\n')
@@ -168,7 +168,7 @@ def enable_avaiL_startup():
 
 
 def disable_avail_startup():
-    with open('autostart_avail.sh', 'w') as bash_file:
+    with open('autostart/autostart_avail.sh', 'w') as bash_file:
         bash_file.seek(0)
         bash_file.truncate()
 
