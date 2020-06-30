@@ -12,17 +12,27 @@ import loggers as lg
 import cli
 
 
-# AVAIL_MAIN_FILE = 'main.py'
-AVAIL_CONTAINER_NAME = "avail_gpi"
 
+
+AVAIL_WORKDIR = os.getenv('WORKDIR')
+AVAIL_CONTAINER_NAME = "avail_gpi"
 # Set to true if Deploymend mode is needed
 DEPLOYMENT = False
 
 if DEPLOYMENT is True:
     avail_image = "handreev/avail_gpi_0.8:ver06_2020"
+    cfg_dir = "{}/cfg".format(AVAIL_WORKDIR)
+    print(cfg_dir)
+    volumes = {
+        cfg_dir: {'bind': '/app', 'mode': 'rw'},
+        '/var/log/': {'bind': '/app/logs', 'mode': 'rw'}
+    }
 else:
     avail_image = "avail_gpi_0.8:v1.1"
-
+    volumes = {
+        '/Projects/avail_gpi_0.8_docker/avail_gpi': {'bind': '/app', 'mode': 'rw'},
+        '/var/log/': {'bind': '/app/logs', 'mode': 'rw'}
+    }
 
 # Create a docker client, connected to the docker socket (server)
 # Used for finding and stopping containers
@@ -66,16 +76,13 @@ def is_container_running(name):
 
 
 def start_avail_script():
-    volumes = {
-        '/Projects/avail_gpi_0.8_docker/avail_gpi': {'bind': '/app', 'mode': 'rw'},
-        '/var/log/': {'bind': '/app/logs', 'mode': 'rw'}
-    }
-    
+    ports = { '8000/tcp':8000 }
+
     if is_container_running(AVAIL_CONTAINER_NAME) is False:
         control_log.info("{} not running - starting in Deployment mode: {}".format(avail_image, DEPLOYMENT))
         # os.system('docker container run -d --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1 &')
         avail_container = dock_client.containers.run(avail_image, detach=True, privileged=True,\
-            remove=True, name=AVAIL_CONTAINER_NAME, volumes=volumes)
+            remove=True, name=AVAIL_CONTAINER_NAME, volumes=volumes, ports=ports)
         control_log.info('Avail container started with id:{}'.format(avail_container.id))
     else:
         control_log.info('Main container is already running')
