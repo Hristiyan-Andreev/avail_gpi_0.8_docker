@@ -15,13 +15,13 @@ import cli
 
 
 AVAIL_WORKDIR = os.getenv('WORKDIR')
+cfg_dir = "{}/cfg".format(AVAIL_WORKDIR)
 AVAIL_CONTAINER_NAME = "avail_gpi"
 # Set to true if Deploymend mode is needed
-DEPLOYMENT = False
+DEPLOYMENT = True
 
 if DEPLOYMENT is True:
     avail_image = "handreev/avail_gpi_0.8:ver06_2020"
-    cfg_dir = "{}/cfg".format(AVAIL_WORKDIR)
     print(cfg_dir)
     volumes = {
         cfg_dir: {'bind': '/app', 'mode': 'rw'},
@@ -167,7 +167,7 @@ def enable_avaiL_startup():
         bash_file.truncate()
         bash_file.write('#!/bin/sh\n')
         bash_file.write(
-            'docker container run --rm --privileged --name "avail_gpi" -v /Projects/avail_gpi_0.8_docker/avail_gpi:/app -v /var/log/:/app/logs avail_gpi_0.8:v1.1\n')
+            'docker container run --rm --privileged --name "avail_gpi" -v {}:/app/cfg -v /var/log/:/app/logs {}\n'.format(cfg_dir, avail_image))
 
     control_log.info('Main avail script autostart enabled')
 
