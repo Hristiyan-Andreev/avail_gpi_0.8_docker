@@ -16,7 +16,7 @@ import cli
 AVAIL_CONTAINER_NAME = "avail_gpi"
 
 # Set to true if Deploymend mode is needed
-DEPLOYMENT = False
+DEPLOYMENT = True
 
 if DEPLOYMENT is True:
     avail_image = "handreev/avail_gpi_0.8:ver06_2020"
@@ -46,7 +46,7 @@ ss_options = {
 
 autostart_options = {
     'enable': 'Enable main script autostart',
-    'disable': 'Disable main scritp autostart',
+    'disable': 'Disable main script autostart',
     'back': 'Back to main menu'
 }
 
