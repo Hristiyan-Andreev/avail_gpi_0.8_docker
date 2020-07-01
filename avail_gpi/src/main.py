@@ -70,13 +70,13 @@ try:
     #Setup GPIOs as inputs with PULL-UP
     for gpi,id in cf.gpi2stream.items():
         print(gpi)
-        GPIO.setup( int(gpi), GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup( int(gpi), GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     # Tie callbacks to events
 
     for gpi,id in cf.gpi2stream.items():
         GPIO.add_event_detect( int(gpi), GPIO.BOTH, callback = gpi_event_dict[gpi].\
-            start_stop_avail , bouncetime = 20)
+            start_stop_avail , bouncetime = 10)
 
 # check_elemental_connection()
 except Exception as e:

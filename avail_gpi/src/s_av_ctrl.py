@@ -124,3 +124,4 @@ class StreamAvailController:
         elif not self.in_cue:
             # If GPIO input is still 0 -> do nothing // if GPIO went to 1 -> start cue
             return 0 if not GPIO.input(int(self.gpi_trigger)) else self.start_cue()
+
