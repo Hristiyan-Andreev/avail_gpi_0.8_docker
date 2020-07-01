@@ -87,7 +87,6 @@ except Exception as e:
 if __name__ == '__main__':
     try:
         while(True):
-            # gpi_event_dict['21'].in_cue = True
             main_log.info("Running")
             time.sleep(10)
             pass
