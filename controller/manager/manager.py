@@ -16,7 +16,7 @@ import cli
 AVAIL_CONTAINER_NAME = "avail_gpi"
 
 # Set to true if Deploymend mode is needed
-DEPLOYMENT = True
+DEPLOYMENT = False
 
 if DEPLOYMENT is True:
     avail_image = "handreev/avail_gpi_0.8:ver06_2020"

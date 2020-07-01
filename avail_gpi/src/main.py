@@ -69,8 +69,8 @@ try:
     GPIO.setmode(GPIO.BCM)
     #Setup GPIOs as inputs with PULL-UP
     for gpi,id in cf.gpi2stream.items():
-        print(gpi)
         GPIO.setup( int(gpi), GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        main_log.info('GPIO: {} set up as input'.format(gpi))
 
     # Tie callbacks to events
 
@@ -87,8 +87,8 @@ except Exception as e:
 if __name__ == '__main__':
     try:
         while(True):
-            main_log.info("Running")
-            time.sleep(10)
+            # main_log.info("Running")
+            # time.sleep(10)
             pass
     except KeyboardInterrupt:
         main_log.info('Exiting on keyboard interrupt\n')

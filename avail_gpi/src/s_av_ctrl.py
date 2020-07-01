@@ -5,6 +5,7 @@ import time
 
 from helpers import TimeMeasure
 import elemental_api_class as liveapi
+import loggers as lg
 
 class StreamAvailController: 
     
@@ -19,6 +20,7 @@ class StreamAvailController:
         self.splice_counter = 0
         self.interrupt_counter = 0
         self.reaction_time = TimeMeasure()
+        self.main_log = lg.setup_logger("avail_log", "main")
 
     def __str__(self):
         return "GPI: {}, event_id: {}, in_cue: {}".format(self.gpi_trigger, self.event_id, self.in_cue)
@@ -47,7 +49,7 @@ class StreamAvailController:
         response = self.elemental_api.start_cue(self.event_id)
         self.in_cue = True
         self.lock_stream()
-        print("3. Starting cue")
+        self.main_log.info("3. Starting cue")
         return response
         
 
@@ -57,7 +59,7 @@ class StreamAvailController:
         response = self.elemental_api.stop_cue(self.event_id)
         self.in_cue = False
         self.lock_stream()
-        print("3. Stopping cue")
+        self.main_log.info("3. Stopping cue")
         return response
     
 
@@ -67,24 +69,24 @@ class StreamAvailController:
         self.reaction_time.start_measure()
         self.interrupt_counter += 1
 
-        print('--------------------------------------------\n')
-        print("1.{} / {} Event detcted / Number: {}".format(dt.datetime.now(), edge, self.interrupt_counter))
-        print("2. Stream is in cue: {}".format(self.in_cue))
+        # self.main_log.info('--------------------------------------------\n')
+        self.main_log.info("1.{} / {} Event detcted / Number: {}".format(dt.datetime.now(), edge, self.interrupt_counter))
+        self.main_log.info("2. Stream is in cue: {}".format(self.in_cue))
 
         # Rising edge detected and Stream is NOT in Cue => Start cue
         if edge and not self.in_cue:
             response = self.start_cue()
             if response is 1:
-                print('Stream is locked!')
+                self.main_log.info('Stream is locked!')
                 return 0
 
             self.reaction_time.end_measure()
             self.splice_counter += 1
 
-            print('4. AD STARTED: Splice count:{} / Event Num: {}\n'.format(self.splice_counter, self.interrupt_counter))
-            print(response.text)
-            self.reaction_time.print_measure()
-            print('--------------------------------------------\n')
+            self.main_log.info('4. AD STARTED: Splice count:{} / Event Num: {}'.format(self.splice_counter, self.interrupt_counter))
+            self.main_log.info(response.text)
+            self.main_log.info(self.reaction_time.return_measure())
+            # self.main_log.info('--------------------------------------------\n')
 
             return 0
 
@@ -93,13 +95,13 @@ class StreamAvailController:
             response = self.stop_cue()
             self.reaction_time.end_measure()
             if response is 1:
-                print('Stream is locked!')
+                self.main_log.info('Stream is locked!')
                 return 0
             
-            print('4. AD STOPPED: Splice count:{} / Event Num: {}\n'.format(self.splice_counter, self.interrupt_counter))
-            print(response.text)
-            self.reaction_time.print_measure()       
-            print('--------------------------------------------\n')
+            self.main_log.info('4. AD STOPPED: Splice count:{} / Event Num: {}'.format(self.splice_counter, self.interrupt_counter))
+            self.main_log.info(response.text)
+            self.main_log.info(self.reaction_time.return_measure())
+            # self.main_log.info('--------------------------------------------\n')
 
             return 0
 
