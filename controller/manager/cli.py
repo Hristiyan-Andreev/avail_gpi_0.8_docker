@@ -24,14 +24,14 @@ mm_choices = {
     'edit_sett':'Edit settings',
     'preview_ch': 'Preview changes',
     'save_ch': 'Save changes to file',
-    'back': 'Exit the program'
+    'back': 'Back to main menu without saving'
 }
 
 main_cfg_choices = {
     'elemental':'Elemental server - IP and credentials',
     'stream': 'Stream-GPI pairs - number of streams and GPI mapping',
     'avail': 'Minimum avail duration - Enable/Disable, Duration',
-    'back': 'Back to main menu'
+    'back': 'Back to main configuration menu'
 }
 
 av_choices = {
@@ -168,7 +168,7 @@ def stream_menu():
             'type': 'input',
             'name': 'gpi_num',
             'message': 'Enter the number of GPI-Stream pairs',
-            # 'validate':
+            # 'validate': val.GPIValidator
             # 'filter': lambda input: int(input)
         }
     ]
@@ -185,7 +185,7 @@ def stream_menu():
                     'type': 'input',
                     'name': 'gpi_{}'.format(stream),
                     'message': 'Enter the GPI pin for GPI-Stream pair number ({}):'.format(stream),
-                    # 'validate': lambda input: not isinstance(input, int) or 'Enter an int value',
+                    'validate':  val.GPIValidator
                     # 'filter': lambda input: int(input)
                 }
             ]
