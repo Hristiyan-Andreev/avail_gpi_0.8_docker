@@ -1,7 +1,7 @@
 idna==2.9
 ijson==3.0.2
 prompt-toolkit==1.0.14
-Pygments==2.6.1
+Pygments==2.7.4
 PyInquirer==1.0.3
 regex==2020.5.14
 websocket-client==0.57.0
